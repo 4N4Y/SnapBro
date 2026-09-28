@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudySnap — High-Performance Study Assistant</title>
-    <!-- Cache-busting query parameter v=3.0 -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=3.0">
+    <!-- Cache-busting query parameter v=4.0 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=4.0">
     <!-- Google Fonts: Space Grotesk (Brutalist Headlines), JetBrains Mono (Technical/Off-White Specs), Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -140,7 +140,7 @@
 
                     <!-- Submit Button -->
                     <button type="submit" id="processBtn" class="btn btn-primary" disabled>
-                        "EXECUTE ANALYSIS" →
+                        "Upload & Process" →
                     </button>
                 </form>
 
@@ -197,6 +197,6 @@
     </footer>
 
     <!-- Linking external JavaScript via Flask url_for with cache buster -->
-    <script src="{{ url_for('static', filename='script.js') }}?v=3.0"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=4.0"></script>
 </body>
 </html>

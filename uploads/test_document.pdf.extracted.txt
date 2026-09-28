@@ -1,0 +1,6 @@
+StudySnap Neural Document Engine.
+Chapter 1: Quantum Computing Fundamentals.
+Quantum bits or qubits can exist in a superposition of states.
+
+Chapter 2: Algorithms and Entanglement.
+Quantum algorithms utilize entanglement for exponential parallel computation.

@@ -117,19 +117,76 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 4. Form Submit Handler
-    uploadForm.addEventListener('submit', (e) => {
+    // 4. Form Submit Handler - Asynchronous Upload & PyMuPDF Processing
+    uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const selectedFile = fileInput.files[0];
 
         if (!selectedFile) {
-            alert('Please select a file first!');
+            statusMessage.className = 'status-message error';
+            statusMessage.innerHTML = '⚠️ Please select a PDF file first.';
+            statusMessage.classList.remove('hidden');
             return;
         }
 
-        // Show friendly confirmation message
-        statusMessage.className = 'status-message success';
-        statusMessage.innerHTML = '<strong>[SYS.EXECUTE]</strong> "' + selectedFile.name + '" locked & loaded. Backend Flask pipeline ready for extraction.';
+        // Show processing state on button and status banner
+        processBtn.disabled = true;
+        processBtn.innerHTML = '<span>⏳ Processing & Extracting Text...</span>';
+        
+        statusMessage.className = 'status-message loading';
+        statusMessage.innerHTML = `<strong>[SYS.PROCESSING]</strong> Uploading <code>${selectedFile.name}</code> and extracting text via PyMuPDF...`;
         statusMessage.classList.remove('hidden');
+
+        try {
+            const formData = new FormData();
+            formData.append('document', selectedFile);
+
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Update existing UI to show the processing result
+                statusMessage.className = 'status-message success';
+                statusMessage.innerHTML = `
+                    <div class="result-header">
+                        <span class="result-badge">✔ EXTRACTION COMPLETE</span>
+                        <span class="result-ready">STORED FOR AI</span>
+                    </div>
+                    <div class="result-filename"><strong>File:</strong> ${data.filename}</div>
+                    <div class="result-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">${data.words.toLocaleString()}</span>
+                            <span class="stat-label">Words Extracted</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">${data.characters.toLocaleString()}</span>
+                            <span class="stat-label">Characters</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">${data.pages}</span>
+                            <span class="stat-label">Page(s)</span>
+                        </div>
+                    </div>
+                    ${data.preview ? `
+                    <div class="result-preview">
+                        <span class="preview-label">EXTRACTED TEXT PREVIEW:</span>
+                        <p class="preview-text">"${data.preview}"</p>
+                    </div>` : ''}
+                `;
+            } else {
+                statusMessage.className = 'status-message error';
+                statusMessage.innerHTML = `<strong>[EXTRACTION ERROR]</strong> ${data.error || 'Failed to process document.'}`;
+            }
+        } catch (err) {
+            statusMessage.className = 'status-message error';
+            statusMessage.innerHTML = `<strong>[NETWORK ERROR]</strong> Unable to connect to backend: ${err.message}`;
+        } finally {
+            processBtn.disabled = false;
+            processBtn.innerHTML = 'Upload & Process →';
+        }
     });
 });
