@@ -1,92 +1,202 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="industrial">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudySnap - Smart Study Assistant</title>
-    <!-- Linking external CSS via Flask url_for -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Google Fonts for modern typography -->
+    <title>StudySnap — High-Performance Study Assistant</title>
+    <!-- Cache-busting query parameter v=3.0 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=3.0">
+    <!-- Google Fonts: Space Grotesk (Brutalist Headlines), JetBrains Mono (Technical/Off-White Specs), Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation Bar -->
+    <!-- Top Navigation Bar -->
     <header class="navbar">
-        <div class="logo">
-            <span class="logo-icon">⚡</span>
-            <span class="logo-text">StudySnap</span>
+        <a href="/" class="logo-group">
+            <!-- 4-Petal Geometric Cross Brand Mark (Inspired by Reference Image 1) -->
+            <div class="logo-quad-icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 40 40" fill="currentColor">
+                    <path d="M20 20 C20 9, 11 0, 0 0 C0 11, 9 20, 20 20 Z" />
+                    <path d="M20 20 C20 9, 29 0, 40 0 C40 11, 31 20, 20 20 Z" />
+                    <path d="M20 20 C20 31, 29 40, 40 40 C40 29, 31 20, 20 20 Z" />
+                    <path d="M20 20 C20 31, 11 40, 0 40 C0 29, 9 20, 20 20 Z" />
+                </svg>
+            </div>
+            <div class="logo-title">"STUDYSNAP"</div>
+        </a>
+
+        <div class="nav-actions">
+            <!-- Industrial Tech Spec Badge -->
+            <div class="nav-spec-badge">
+                <span class="dot"></span>
+                <span>SYS.CORE // v2.5</span>
+                <span class="nav-hazard-slashes">/////</span>
+            </div>
+
+            <!-- Aesthetic Theme Switcher (Toggle between Image 2 Industrial Dark & Image 1 Swiss Poster Red) -->
+            <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle theme style">
+                <span id="themeToggleIcon">⚡</span>
+                <span id="themeToggleLabel">INDUSTRIAL</span>
+            </button>
         </div>
-        <div class="nav-badge">Snapdragon AI Ready</div>
     </header>
 
     <!-- Main Container -->
     <main class="container">
-        <!-- Hero Section -->
+        <!-- Hero Section (Swiss Brutalist Poster Layout - Reference Image 1) -->
         <section class="hero">
-            <h1>Turn Study Notes into Superpowers</h1>
-            <p class="subtitle">Upload your study material or PDFs to get instant summaries, key concepts, and quiz flashcards.</p>
+            <div class="hero-kicker">
+                <span>5 Must-Have Powers for High-Yield Study</span>
+            </div>
+            <h1 class="hero-title">
+                <span class="quote-line">"STOP MANUAL STUDYING!"</span>
+                <span class="accent-line">TURN NOTES INTO SUPERPOWERS</span>
+            </h1>
+            <p class="hero-subtitle">
+                Upload dense academic textbooks, lecture slides, or research papers. Get instant high-yield bullet condensations, structured concept maps, and active-recall flashcards.
+            </p>
+            <div class="hero-meta-bar">
+                <div class="hero-meta-left">
+                    <span>BROUGHT TO YOU BY @STUDYSNAP</span>
+                    <span>2025 | 346 VERSE</span>
+                </div>
+                <div class="hero-meta-arrow">←────────────────────────</div>
+            </div>
         </section>
 
-        <!-- Upload Card Section -->
-        <section class="card upload-card">
-            <h2>Upload Document</h2>
-            <p class="card-desc">Select a PDF or document from your device to get started.</p>
-
-            <form id="uploadForm" class="upload-form">
-                <div class="drop-zone" id="dropZone">
-                    <div class="drop-icon">📁</div>
-                    <p class="drop-title">Drag & drop your file here</p>
-                    <span class="drop-subtitle">or click to browse files (PDF, DOCX, TXT)</span>
-                    <input type="file" id="fileInput" name="document" accept=".pdf,.doc,.docx,.txt" class="file-input">
-                </div>
-
-                <!-- Selected File Display -->
-                <div id="fileInfo" class="file-info hidden">
-                    <span class="file-icon">📄</span>
-                    <div class="file-details">
-                        <span id="fileName" class="file-name">filename.pdf</span>
-                        <span id="fileSize" class="file-size">0 KB</span>
+        <!-- Industrial Upload Card (Off-White x NASA Aesthetic - Reference Image 2) -->
+        <section class="upload-card-wrapper">
+            <div class="industrial-card">
+                <!-- Card Header (Exact Off-White / NASA card layout) -->
+                <div class="card-header-grid">
+                    <div class="card-header-left">
+                        <div class="card-quote-title">"NEW HORIZONS"</div>
+                        <div class="card-tech-meta">
+                            STUDYSNAP FOR ACADEMICS<br>
+                            SAN FRANCISCO, CA • GLOBAL<br>
+                            "NEURAL INPUT ENGINE"<br>
+                            c.2025
+                        </div>
+                        <div class="card-hero-num">"757"</div>
                     </div>
-                    <button type="button" id="removeFileBtn" class="btn-remove" title="Remove file">&times;</button>
+
+                    <div class="card-header-right">
+                        <div class="card-agency-title">STUDYSNAP</div>
+                        <p class="card-agency-desc">
+                            The National Neural Study Administration is an independent learning framework responsible for civilian high-throughput cognition and automated document synthesis.
+                        </p>
+                        <div class="card-agency-meta">
+                            <span>c.2025</span>
+                            <!-- Hazard slashes 5-bars (Image 2 signature) -->
+                            <svg class="card-slashes-svg" width="54" height="16" viewBox="0 0 60 20" fill="currentColor">
+                                <polygon points="10,0 16,0 6,20 0,20" />
+                                <polygon points="22,0 28,0 18,20 12,20" />
+                                <polygon points="34,0 40,0 30,20 24,20" />
+                                <polygon points="46,0 52,0 42,20 36,20" />
+                                <polygon points="58,0 64,0 54,20 48,20" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Submit Button -->
-                <button type="submit" id="processBtn" class="btn btn-primary" disabled>
-                    Upload & Process (Ready for Next Step)
-                </button>
-            </form>
+                <!-- Diagonal Hazard Stripe Ribbon -->
+                <div class="hazard-strip-banner" aria-hidden="true"></div>
 
-            <div id="statusMessage" class="status-message hidden"></div>
+                <!-- Document Upload Form -->
+                <form id="uploadForm" class="upload-form">
+                    <div class="drop-zone" id="dropZone">
+                        <!-- Blueprint Crosshair Reticles in 4 Corners -->
+                        <span class="reticle reticle-tl">+</span>
+                        <span class="reticle reticle-tr">+</span>
+                        <span class="reticle reticle-bl">+</span>
+                        <span class="reticle reticle-br">+</span>
+
+                        <div class="drop-icon-container">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <div class="drop-title">"DRAG & DROP DOCUMENT"</div>
+                        <div class="drop-subtitle">OR CLICK TO BROWSE • FORMATS: PDF, DOCX, TXT (MAX 50MB)</div>
+                        <input type="file" id="fileInput" name="document" accept=".pdf,.doc,.docx,.txt" class="file-input">
+                    </div>
+
+                    <!-- Selected File Info Box -->
+                    <div id="fileInfo" class="file-info hidden">
+                        <span class="file-icon">📄</span>
+                        <div class="file-details">
+                            <span id="fileName" class="file-name">filename.pdf</span>
+                            <div class="file-meta-row">
+                                <span id="fileSize" class="file-size">0 KB</span>
+                                <span class="file-status-indicator">READY FOR INGESTION</span>
+                            </div>
+                        </div>
+                        <button type="button" id="removeFileBtn" class="btn-remove" title="Remove file">&times;</button>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="processBtn" class="btn btn-primary" disabled>
+                        "EXECUTE ANALYSIS" →
+                    </button>
+                </form>
+
+                <div id="statusMessage" class="status-message hidden"></div>
+
+                <!-- Authentic Diagonal Hazard Stripes Block (Exact Reference Image 2) -->
+                <div class="hazard-card-footer" aria-hidden="true"></div>
+            </div>
         </section>
 
-        <!-- Feature Preview Cards -->
+        <!-- Feature Preview Cards (Brutalist Technical Specs) -->
         <section class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">📄</div>
-                <h3>PDF Extraction</h3>
-                <p>Fast document text & section extraction powered by PyMuPDF.</p>
+                <div class="feature-card-header">
+                    <span class="feature-num">"01"</span>
+                    <div class="feature-icon-badge">📄</div>
+                </div>
+                <h3>PDF EXTRACTION</h3>
+                <div class="feature-tech-label">PYMUPDF CORE // VECTOR READY</div>
+                <p>Lightning-fast document parser extracts multi-column text, diagrams, formulas, and structural hierarchy in under 200ms.</p>
             </div>
+
             <div class="feature-card">
-                <div class="feature-icon">✨</div>
-                <h3>AI Summaries</h3>
-                <p>Condense 50-page chapters into high-yield revision bullet points.</p>
+                <div class="feature-card-header">
+                    <span class="feature-num">"02"</span>
+                    <div class="feature-icon-badge">⚡</div>
+                </div>
+                <h3>AI SYNTHESIS</h3>
+                <div class="feature-tech-label">HIGH-YIELD // REVISION CORE</div>
+                <p>Compress 60-page academic chapters into high-impact key concepts, exam-ready summaries, and actionable study breakdowns.</p>
             </div>
+
             <div class="feature-card">
-                <div class="feature-icon">🎯</div>
-                <h3>Flashcards & Quiz</h3>
-                <p>Generate interactive test questions to verify your understanding.</p>
+                <div class="feature-card-header">
+                    <span class="feature-num">"03"</span>
+                    <div class="feature-icon-badge">🎯</div>
+                </div>
+                <h3>ACTIVE RECALL</h3>
+                <div class="feature-tech-label">SPACED REPETITION // 5X RETENTION</div>
+                <p>Automatically generate challenging flashcards and adaptive quiz questions to test retention and cement permanent understanding.</p>
             </div>
         </section>
     </main>
 
     <!-- Footer -->
     <footer class="footer">
-        <p>StudySnap • Built with Flask, HTML, CSS & JavaScript</p>
+        <div class="footer-content">
+            <div class="footer-left">
+                <span>STUDYSNAP c.2025 // INDUSTRIAL SPECIFICATION</span>
+                <span class="footer-hazard">/////</span>
+            </div>
+            <div class="footer-arrow">← BUILT WITH FLASK & INDUSTRIAL AI →</div>
+        </div>
     </footer>
 
-    <!-- Linking external JavaScript via Flask url_for -->
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!-- Linking external JavaScript via Flask url_for with cache buster -->
+    <script src="{{ url_for('static', filename='script.js') }}?v=3.0"></script>
 </body>
 </html>

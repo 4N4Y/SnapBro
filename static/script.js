@@ -1,6 +1,6 @@
 // =====================================================
 // StudySnap - Client-Side JavaScript
-// Simple & clear code for file selection handling
+// Handles file upload interactions and theme toggling
 // =====================================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,6 +14,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadForm = document.getElementById('uploadForm');
     const statusMessage = document.getElementById('statusMessage');
 
+    // Theme Switcher Elements
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeToggleIcon = document.getElementById('themeToggleIcon');
+    const themeToggleLabel = document.getElementById('themeToggleLabel');
+
+    // =========================================
+    // Theme Management (Industrial vs Swiss Poster)
+    // =========================================
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('studysnap-theme', theme);
+        
+        if (theme === 'poster') {
+            if (themeToggleIcon) themeToggleIcon.textContent = '🔴';
+            if (themeToggleLabel) themeToggleLabel.textContent = 'POSTER RED';
+        } else {
+            if (themeToggleIcon) themeToggleIcon.textContent = '⚡';
+            if (themeToggleLabel) themeToggleLabel.textContent = 'INDUSTRIAL';
+        }
+    }
+
+    // Load saved theme or default to 'industrial'
+    const savedTheme = localStorage.getItem('studysnap-theme') || 'industrial';
+    setTheme(savedTheme);
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'industrial';
+            const nextTheme = currentTheme === 'industrial' ? 'poster' : 'industrial';
+            setTheme(nextTheme);
+        });
+    }
+
+    // =========================================
+    // File Handling
+    // =========================================
     // Helper: Format bytes to human readable format (KB, MB)
     function formatBytes(bytes) {
         if (bytes === 0) return '0 Bytes';
@@ -81,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 4. Form Submit Preview (No AI yet - placeholder for upcoming step)
+    // 4. Form Submit Handler
     uploadForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const selectedFile = fileInput.files[0];
@@ -93,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Show friendly confirmation message
         statusMessage.className = 'status-message success';
-        statusMessage.textContent = `✅ "${selectedFile.name}" selected! Your Flask setup is ready for AI & PDF extraction in the next step.`;
+        statusMessage.innerHTML = '<strong>[SYS.EXECUTE]</strong> "' + selectedFile.name + '" locked & loaded. Backend Flask pipeline ready for extraction.';
         statusMessage.classList.remove('hidden');
     });
 });
