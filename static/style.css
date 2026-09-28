@@ -84,6 +84,313 @@
     --stripe-color-2: #141619;
 }
 
+/* =====================================================
+   Blueprint Theme — Vintage Drafting Paper + Retro Mac Amber
+   Ref 1: Engineering graph paper (cream/ivory, navy grid, dark navy text)
+   Ref 2: Retro Mac OS amber desktop (amber canvas, chunky ivory windows)
+   Buttons always use the original vermilion red #ff3b14
+   ===================================================== */
+[data-theme="blueprint"] {
+    --bg-canvas: #e8b84b;
+    --bg-surface: #f5edd6;
+    --bg-surface-elevated: #faf4e1;
+    --border-color: #1a1f3c;
+    --border-light: rgba(26, 31, 60, 0.18);
+
+    /* Accent — keep original vermilion for all buttons/highlights */
+    --color-vermilion: #ff3b14;
+    --color-vermilion-hover: #ff5733;
+    --color-vermilion-dark: #d92b07;
+    --color-charcoal: #1a1f3c;
+    --color-black: #0d1024;
+
+    /* Text — navy on cream, like drafting ink on paper */
+    --text-primary: #1a1f3c;
+    --text-secondary: #3d4466;
+    --text-muted: #6b7199;
+    --text-contrast: #f5edd6;
+
+    /* Upload card — ivory panel, thick navy border, retro Mac window feel */
+    --card-vermilion-bg: #f5edd6;
+    --card-vermilion-text: #1a1f3c;
+    --card-vermilion-border: #1a1f3c;
+    --card-dropzone-bg: rgba(26, 31, 60, 0.04);
+    --card-dropzone-border: #1a1f3c;
+
+    /* Buttons: original red on dark bg */
+    --card-btn-bg: #ff3b14;
+    --card-btn-text: #ffffff;
+    --card-btn-hover: #d92b07;
+
+    /* Stripe pattern: amber + navy (drafting pencil lines) */
+    --stripe-color-1: #1a1f3c;
+    --stripe-color-2: #e8b84b;
+}
+
+/* Blueprint-specific background: amber canvas with navy grid (drafting paper) */
+[data-theme="blueprint"] body::before {
+    background-image:
+        linear-gradient(to right, rgba(26, 31, 60, 0.18) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(26, 31, 60, 0.18) 1px, transparent 1px),
+        linear-gradient(to right, rgba(26, 31, 60, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(26, 31, 60, 0.07) 1px, transparent 1px);
+    background-size: 32px 32px, 32px 32px, 8px 8px, 8px 8px;
+}
+
+/* Blueprint navbar — thick dark bottom border like a title block rule */
+[data-theme="blueprint"] .navbar {
+    border-bottom: 3px solid #1a1f3c;
+    background-color: #e8b84b;
+}
+
+[data-theme="blueprint"] .logo-quad-icon {
+    color: #ff3b14;
+}
+
+[data-theme="blueprint"] .logo-title span {
+    color: #ff3b14;
+}
+
+[data-theme="blueprint"] .nav-spec-badge {
+    background-color: #f5edd6;
+    border: 2px solid #1a1f3c;
+    color: #1a1f3c;
+    border-radius: 0;
+    font-weight: 700;
+    box-shadow: 2px 2px 0 #1a1f3c;
+}
+
+[data-theme="blueprint"] .nav-spec-badge .dot {
+    background-color: #ff3b14;
+}
+
+[data-theme="blueprint"] .nav-hazard-slashes {
+    color: #ff3b14;
+}
+
+[data-theme="blueprint"] .theme-toggle-btn {
+    background: #f5edd6;
+    border: 2px solid #1a1f3c;
+    color: #1a1f3c;
+    border-radius: 0;
+    box-shadow: 3px 3px 0 #1a1f3c;
+    font-weight: 800;
+}
+
+[data-theme="blueprint"] .theme-toggle-btn:hover {
+    background: #ff3b14;
+    color: #ffffff;
+    border-color: #1a1f3c;
+    box-shadow: 3px 3px 0 #1a1f3c;
+    transform: translateY(0);
+}
+
+/* Blueprint hero — navy ink typography */
+[data-theme="blueprint"] .hero-kicker {
+    color: #ff3b14;
+}
+
+[data-theme="blueprint"] .hero-title .quote-line {
+    color: #1a1f3c;
+}
+
+[data-theme="blueprint"] .hero-title .accent-line {
+    color: #ff3b14;
+}
+
+[data-theme="blueprint"] .hero-subtitle {
+    color: #3d4466;
+}
+
+[data-theme="blueprint"] .hero-meta-bar {
+    border-top-color: #1a1f3c;
+    color: #6b7199;
+}
+
+/* Blueprint industrial card — ivory/cream Mac window with thick dark border */
+[data-theme="blueprint"] .industrial-card {
+    background-color: #f5edd6;
+    color: #1a1f3c;
+    border: 3px solid #1a1f3c;
+    border-radius: 4px;
+    box-shadow: 6px 6px 0 #1a1f3c;
+}
+
+/* Title bar stripe at top of card — retro Mac window chrome */
+[data-theme="blueprint"] .industrial-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 28px;
+    background: repeating-linear-gradient(
+        90deg,
+        #1a1f3c 0px,
+        #1a1f3c 2px,
+        #f5edd6 2px,
+        #f5edd6 6px
+    );
+    border-radius: 0;
+    border-bottom: 2px solid #1a1f3c;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Offset content below the fake window chrome bar */
+[data-theme="blueprint"] .card-header-grid {
+    padding-top: 2.25rem;
+}
+
+/* Hazard strip becomes a thick navy rule */
+[data-theme="blueprint"] .hazard-strip-banner {
+    background: repeating-linear-gradient(
+        -45deg,
+        #1a1f3c,
+        #1a1f3c 10px,
+        #e8b84b 10px,
+        #e8b84b 20px
+    );
+    height: 10px;
+    border-radius: 0;
+    border: 1.5px solid #1a1f3c;
+}
+
+/* Drop zone — engineering spec box, square corners, navy dashes */
+[data-theme="blueprint"] .drop-zone {
+    border: 2px dashed #1a1f3c;
+    background-color: rgba(26, 31, 60, 0.03);
+    border-radius: 0;
+}
+
+[data-theme="blueprint"] .drop-zone:hover,
+[data-theme="blueprint"] .drop-zone.dragover {
+    background-color: rgba(255, 59, 20, 0.06);
+    border-style: solid;
+    border-color: #ff3b14;
+}
+
+[data-theme="blueprint"] .drop-icon-container {
+    background: rgba(26, 31, 60, 0.08);
+    border-radius: 0;
+    border: 1px solid #1a1f3c;
+    color: #1a1f3c;
+}
+
+/* File info box — vintage form field look */
+[data-theme="blueprint"] .file-info {
+    background: rgba(232, 184, 75, 0.25);
+    border: 2px solid #1a1f3c;
+    border-radius: 0;
+    box-shadow: 2px 2px 0 #1a1f3c;
+}
+
+/* Blueprint button — solid red, no radius, offset shadow (retro Mac button) */
+[data-theme="blueprint"] .btn-primary {
+    background-color: #ff3b14;
+    color: #ffffff;
+    border: 2px solid #1a1f3c;
+    border-radius: 0;
+    box-shadow: 4px 4px 0 #1a1f3c;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+[data-theme="blueprint"] .btn-primary:hover:not(:disabled) {
+    background-color: #d92b07;
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #1a1f3c;
+}
+
+/* Status message — form field / clipboard style */
+[data-theme="blueprint"] .status-message {
+    background-color: rgba(245, 237, 214, 0.85);
+    border: 2px solid #1a1f3c;
+    border-radius: 0;
+    color: #1a1f3c;
+}
+
+[data-theme="blueprint"] .stat-item {
+    background: rgba(232, 184, 75, 0.2);
+    border: 2px solid #1a1f3c;
+    border-radius: 0;
+    box-shadow: 2px 2px 0 #1a1f3c;
+}
+
+[data-theme="blueprint"] .result-preview {
+    background: rgba(26, 31, 60, 0.04);
+    border: 2px solid #1a1f3c;
+    border-radius: 0;
+}
+
+/* Hazard card footer — amber + navy engineering warning stripes */
+[data-theme="blueprint"] .hazard-card-footer {
+    background: repeating-linear-gradient(
+        -45deg,
+        #1a1f3c,
+        #1a1f3c 16px,
+        #e8b84b 16px,
+        #e8b84b 32px
+    );
+    border: 2px solid #1a1f3c;
+    border-radius: 0;
+    box-shadow: 4px 4px 0 #1a1f3c;
+}
+
+/* Feature cards — drafting paper look with left navy accent bar */
+[data-theme="blueprint"] .feature-card {
+    background: #f5edd6;
+    border: 2px solid #1a1f3c;
+    border-radius: 0;
+    box-shadow: 4px 4px 0 #1a1f3c;
+}
+
+[data-theme="blueprint"] .feature-card::before {
+    background-color: #ff3b14;
+    height: 4px;
+}
+
+[data-theme="blueprint"] .feature-card:hover {
+    border-color: #1a1f3c;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #1a1f3c;
+}
+
+[data-theme="blueprint"] .feature-num {
+    color: #ff3b14;
+    font-family: var(--font-mono);
+}
+
+[data-theme="blueprint"] .feature-icon-badge {
+    background-color: rgba(255, 59, 20, 0.1);
+    color: #ff3b14;
+    border-radius: 0;
+    border: 1px solid #ff3b14;
+}
+
+[data-theme="blueprint"] .feature-tech-label {
+    color: #ff3b14;
+    opacity: 1;
+}
+
+[data-theme="blueprint"] .feature-card p {
+    color: #3d4466;
+}
+
+/* Footer — drafting title block style */
+[data-theme="blueprint"] .footer {
+    border-top: 3px solid #1a1f3c;
+    background-color: #e8b84b;
+}
+
+[data-theme="blueprint"] .footer-content {
+    color: #1a1f3c;
+}
+
+[data-theme="blueprint"] .footer-hazard {
+    color: #ff3b14;
+}
+
 /* Base Resets */
 *, *::before, *::after {
     box-sizing: border-box;

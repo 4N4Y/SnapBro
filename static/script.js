@@ -20,19 +20,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggleLabel = document.getElementById('themeToggleLabel');
 
     // =========================================
-    // Theme Management (Industrial vs Swiss Poster)
+    // Theme Management (Industrial → Poster → Blueprint)
     // =========================================
+    const THEMES = ['industrial', 'poster', 'blueprint'];
+
+    const THEME_META = {
+        industrial: { icon: '⚡', label: 'INDUSTRIAL' },
+        poster:     { icon: '🔴', label: 'POSTER RED' },
+        blueprint:  { icon: '📐', label: 'BLUEPRINT'  },
+    };
+
     function setTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('studysnap-theme', theme);
-        
-        if (theme === 'poster') {
-            if (themeToggleIcon) themeToggleIcon.textContent = '🔴';
-            if (themeToggleLabel) themeToggleLabel.textContent = 'POSTER RED';
-        } else {
-            if (themeToggleIcon) themeToggleIcon.textContent = '⚡';
-            if (themeToggleLabel) themeToggleLabel.textContent = 'INDUSTRIAL';
-        }
+        const meta = THEME_META[theme] || THEME_META['industrial'];
+        if (themeToggleIcon)  themeToggleIcon.textContent  = meta.icon;
+        if (themeToggleLabel) themeToggleLabel.textContent = meta.label;
     }
 
     // Load saved theme or default to 'industrial'
@@ -42,7 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme') || 'industrial';
-            const nextTheme = currentTheme === 'industrial' ? 'poster' : 'industrial';
+            const currentIdx = THEMES.indexOf(currentTheme);
+            const nextTheme = THEMES[(currentIdx + 1) % THEMES.length];
             setTheme(nextTheme);
         });
     }
