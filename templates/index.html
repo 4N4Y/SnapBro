@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudySnap - Smart Study Assistant</title>
+    <!-- Linking external CSS via Flask url_for -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Google Fonts for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="logo">
+            <span class="logo-icon">⚡</span>
+            <span class="logo-text">StudySnap</span>
+        </div>
+        <div class="nav-badge">Snapdragon AI Ready</div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Turn Study Notes into Superpowers</h1>
+            <p class="subtitle">Upload your study material or PDFs to get instant summaries, key concepts, and quiz flashcards.</p>
+        </section>
+
+        <!-- Upload Card Section -->
+        <section class="card upload-card">
+            <h2>Upload Document</h2>
+            <p class="card-desc">Select a PDF or document from your device to get started.</p>
+
+            <form id="uploadForm" class="upload-form">
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-icon">📁</div>
+                    <p class="drop-title">Drag & drop your file here</p>
+                    <span class="drop-subtitle">or click to browse files (PDF, DOCX, TXT)</span>
+                    <input type="file" id="fileInput" name="document" accept=".pdf,.doc,.docx,.txt" class="file-input">
+                </div>
+
+                <!-- Selected File Display -->
+                <div id="fileInfo" class="file-info hidden">
+                    <span class="file-icon">📄</span>
+                    <div class="file-details">
+                        <span id="fileName" class="file-name">filename.pdf</span>
+                        <span id="fileSize" class="file-size">0 KB</span>
+                    </div>
+                    <button type="button" id="removeFileBtn" class="btn-remove" title="Remove file">&times;</button>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="processBtn" class="btn btn-primary" disabled>
+                    Upload & Process (Ready for Next Step)
+                </button>
+            </form>
+
+            <div id="statusMessage" class="status-message hidden"></div>
+        </section>
+
+        <!-- Feature Preview Cards -->
+        <section class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <h3>PDF Extraction</h3>
+                <p>Fast document text & section extraction powered by PyMuPDF.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3>AI Summaries</h3>
+                <p>Condense 50-page chapters into high-yield revision bullet points.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Flashcards & Quiz</h3>
+                <p>Generate interactive test questions to verify your understanding.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>StudySnap • Built with Flask, HTML, CSS & JavaScript</p>
+    </footer>
+
+    <!-- Linking external JavaScript via Flask url_for -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
