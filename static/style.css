@@ -1121,6 +1121,54 @@ body::before {
     font-style: italic;
 }
 
+.ask-panel {
+    margin-top: 1.25rem;
+    padding-top: 1.15rem;
+    border-top: 1px solid var(--card-dropzone-border);
+}
+
+.ask-panel-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    margin-bottom: 0.65rem;
+    opacity: 0.8;
+}
+
+.ask-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    margin-bottom: 0.4rem;
+}
+
+.ask-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--card-dropzone-border);
+    background: var(--card-dropzone-bg);
+    color: inherit;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    resize: vertical;
+}
+
+.ask-input:focus {
+    outline: 2px solid var(--card-dropzone-border);
+}
+
+#askBtn {
+    margin-top: 0.85rem;
+}
+
+.ask-answer {
+    font-style: normal;
+    white-space: pre-wrap;
+}
+
 /* Bottom Diagonal Hazard Stripes block (Image 2 signature element) */
 .hazard-card-footer {
     height: 72px;

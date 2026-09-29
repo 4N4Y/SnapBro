@@ -2,6 +2,20 @@ import os
 from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
 import pymupdf  # PyMuPDF for document text extraction
+from dotenv import load_dotenv
+from google import genai
+
+load_dotenv()
+
+# Current Gemini Flash models. Newer keys cannot call gemini-2.5-flash.
+GEMINI_MODELS = (
+    "gemini-3.7-flash",
+    "gemini-3.6-flash",
+    "gemini-3.5-flash",
+    "gemini-flash-latest",
+)
+PLACEHOLDER_API_KEY = "YOUR_API_KEY_HERE"
+MAX_CONTEXT_CHARS = 400_000
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -145,6 +159,158 @@ def get_current_document():
         "pages": CURRENT_DOCUMENT["page_count"],
         "text": CURRENT_DOCUMENT["text"]
     }), 200
+
+
+def get_gemini_api_key():
+    """Return the Gemini key from the environment, or None if it is missing/placeholder."""
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key or not api_key.strip() or api_key.strip() == PLACEHOLDER_API_KEY:
+        return None
+    return api_key.strip()
+
+
+def missing_api_key_response():
+    return jsonify({
+        "success": False,
+        "error": (
+            "Gemini API key is missing. Set GEMINI_API_KEY in your local .env file "
+            "(do not commit the real key) and restart the Flask server."
+        )
+    }), 503
+
+
+def _error_text(exc):
+    return str(exc).lower()
+
+
+def is_invalid_api_key_error(exc):
+    """Detect invalid/unauthorized Gemini credentials without echoing secret values."""
+    text = _error_text(exc)
+    markers = (
+        "api key not valid",
+        "api_key_invalid",
+        "invalid api key",
+        "api key expired",
+        "invalid x-goog-api-key",
+        "unauthenticated",
+    )
+    return any(marker in text for marker in markers)
+
+
+def is_retryable_model_error(exc):
+    """404/unavailable models should fall through to the next candidate."""
+    text = _error_text(exc)
+    markers = (
+        "not_found",
+        "not found",
+        "no longer available",
+        "unavailable",
+        "high demand",
+        "overloaded",
+        "resource exhausted",
+        "429",
+        "503",
+        "404",
+    )
+    return any(marker in text for marker in markers)
+
+
+@app.route('/ask', methods=['POST'])
+@app.route('/api/ask', methods=['POST'])
+def ask_question():
+    """
+    Answers a student question using the uploaded document and Gemini.
+    The API key stays on the server; it is never sent to the browser.
+    """
+    api_key = get_gemini_api_key()
+    if not api_key:
+        return missing_api_key_response()
+
+    document_text = CURRENT_DOCUMENT.get("text")
+    if not document_text:
+        return jsonify({
+            "success": False,
+            "error": "No document has been uploaded yet. Upload a PDF first, then ask a question."
+        }), 400
+
+    payload = request.get_json(silent=True) or {}
+    question = (payload.get("question") or request.form.get("question") or "").strip()
+    if not question:
+        return jsonify({
+            "success": False,
+            "error": "Please enter a question about the uploaded study material."
+        }), 400
+
+    study_context = document_text[:MAX_CONTEXT_CHARS]
+    prompt = (
+        "You are StudySnap, a study assistant. Answer the student's question using only "
+        "the provided study material. If the material does not contain the answer, say so "
+        "clearly. Be concise and accurate.\n\n"
+        f"Study material (filename: {CURRENT_DOCUMENT.get('filename') or 'document'}):\n"
+        f"{study_context}\n\n"
+        f"Student question:\n{question}"
+    )
+
+    try:
+        client = genai.Client(api_key=api_key)
+        last_error = None
+        used_model = None
+        response = None
+
+        for model_name in GEMINI_MODELS:
+            try:
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                )
+                used_model = model_name
+                break
+            except Exception as exc:
+                last_error = exc
+                if is_invalid_api_key_error(exc):
+                    raise
+                if is_retryable_model_error(exc):
+                    continue
+                raise
+
+        if response is None:
+            raise last_error or RuntimeError("Gemini returned no response.")
+
+        answer = (getattr(response, "text", None) or "").strip()
+        if not answer:
+            return jsonify({
+                "success": False,
+                "error": "Gemini returned an empty response. Try a more specific question."
+            }), 502
+
+        return jsonify({
+            "success": True,
+            "answer": answer,
+            "model": used_model,
+            "filename": CURRENT_DOCUMENT.get("filename"),
+        }), 200
+
+    except Exception as exc:
+        if is_invalid_api_key_error(exc):
+            return jsonify({
+                "success": False,
+                "error": (
+                    "Gemini API key is invalid or unauthorized. Check GEMINI_API_KEY in "
+                    "your local .env file and restart the Flask server."
+                )
+            }), 401
+        if is_retryable_model_error(exc):
+            return jsonify({
+                "success": False,
+                "error": (
+                    "Gemini is busy or the requested model is unavailable. "
+                    "Wait a few seconds and ask again."
+                )
+            }), 503
+        return jsonify({
+            "success": False,
+            "error": "The Gemini API request failed. Please try again in a moment."
+        }), 502
 
 
 if __name__ == '__main__':

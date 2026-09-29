@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const processBtn = document.getElementById('processBtn');
     const uploadForm = document.getElementById('uploadForm');
     const statusMessage = document.getElementById('statusMessage');
+    const askPanel = document.getElementById('askPanel');
+    const questionInput = document.getElementById('questionInput');
+    const askBtn = document.getElementById('askBtn');
+    const askStatus = document.getElementById('askStatus');
 
     // Theme Switcher Elements
     const themeToggleBtn = document.getElementById('themeToggleBtn');
@@ -54,6 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================
     // File Handling
     // =========================================
+    function escapeHtml(value) {
+        const div = document.createElement('div');
+        div.textContent = value == null ? '' : String(value);
+        return div.innerHTML;
+    }
+
     // Helper: Format bytes to human readable format (KB, MB)
     function formatBytes(bytes) {
         if (bytes === 0) return '0 Bytes';
@@ -80,6 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
         fileInfo.classList.add('hidden');
         processBtn.disabled = true;
         statusMessage.classList.add('hidden');
+        if (askPanel) askPanel.classList.add('hidden');
+        if (askStatus) askStatus.classList.add('hidden');
+        if (questionInput) questionInput.value = '';
     }
 
     // 1. File input change event
@@ -181,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="preview-text">"${data.preview}"</p>
                     </div>` : ''}
                 `;
+                if (askPanel) askPanel.classList.remove('hidden');
             } else {
                 statusMessage.className = 'status-message error';
                 statusMessage.innerHTML = `<strong>[EXTRACTION ERROR]</strong> ${data.error || 'Failed to process document.'}`;
@@ -193,4 +207,50 @@ document.addEventListener('DOMContentLoaded', () => {
             processBtn.innerHTML = 'Upload & Process →';
         }
     });
+
+    if (askBtn) {
+        askBtn.addEventListener('click', async () => {
+            const question = (questionInput && questionInput.value || '').trim();
+            if (!question) {
+                askStatus.className = 'status-message error';
+                askStatus.innerHTML = '⚠️ Enter a question about the uploaded document.';
+                askStatus.classList.remove('hidden');
+                return;
+            }
+
+            askBtn.disabled = true;
+            askBtn.textContent = 'Asking Gemini...';
+            askStatus.className = 'status-message loading';
+            askStatus.innerHTML = '<strong>[GEMINI]</strong> Generating an answer from your study material...';
+            askStatus.classList.remove('hidden');
+
+            try {
+                const response = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question })
+                });
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    askStatus.className = 'status-message success';
+                    askStatus.innerHTML = `
+                        <div class="result-header">
+                            <span class="result-badge">✔ ANSWER</span>
+                        </div>
+                        <p class="preview-text ask-answer">${escapeHtml(data.answer)}</p>
+                    `;
+                } else {
+                    askStatus.className = 'status-message error';
+                    askStatus.innerHTML = `<strong>[GEMINI ERROR]</strong> ${escapeHtml(data.error || 'Failed to get an answer.')}`;
+                }
+            } catch (err) {
+                askStatus.className = 'status-message error';
+                askStatus.innerHTML = `<strong>[NETWORK ERROR]</strong> Unable to reach the backend: ${err.message}`;
+            } finally {
+                askBtn.disabled = false;
+                askBtn.textContent = 'Ask Gemini →';
+            }
+        });
+    }
 });

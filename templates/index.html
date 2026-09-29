@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudySnap — High-Performance Study Assistant</title>
-    <!-- Cache-busting query parameter v=5.0 -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=5.0">
+    <!-- Cache-busting query parameter v=6.0 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=6.0">
     <!-- Google Fonts: Space Grotesk (Brutalist Headlines), JetBrains Mono (Technical/Off-White Specs), Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -146,6 +146,14 @@
 
                 <div id="statusMessage" class="status-message hidden"></div>
 
+                <section id="askPanel" class="ask-panel hidden">
+                    <div class="ask-panel-label">ASK THE DOCUMENT</div>
+                    <label class="ask-label" for="questionInput">Question</label>
+                    <textarea id="questionInput" class="ask-input" rows="3" placeholder="Ask a question about the uploaded study material..."></textarea>
+                    <button type="button" id="askBtn" class="btn btn-primary">Ask Gemini →</button>
+                    <div id="askStatus" class="status-message hidden"></div>
+                </section>
+
                 <!-- Authentic Diagonal Hazard Stripes Block (Exact Reference Image 2) -->
                 <div class="hazard-card-footer" aria-hidden="true"></div>
             </div>
@@ -197,6 +205,6 @@
     </footer>
 
     <!-- Linking external JavaScript via Flask url_for with cache buster -->
-    <script src="{{ url_for('static', filename='script.js') }}?v=5.0"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=6.0"></script>
 </body>
 </html>
