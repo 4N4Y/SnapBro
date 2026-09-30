@@ -1,112 +1,118 @@
 # StudySnap
 
-> An AI-powered study companion designed to help students learn from their own study material, with a long-term focus on on-device AI using Snapdragon hardware.
+> An AI-powered study companion designed to help students learn from their own study material, with a modular path toward Snapdragon on-device AI.
 
-##  Overview
+## Overview
 
-StudySnap is an AI study companion that allows students to upload study material such as PDFs and ask questions about the content.
+StudySnap lets students upload study material such as PDFs and ask questions about the content.
 
-The current prototype focuses on the core experience:
+**Upload document → Extract text → Choose inference path → Ask a question → Get an answer**
 
-**Upload PDF → Process Content → Ask a Question → Get an AI-generated Answer**
+The project now exposes one application-facing inference contract with two providers:
 
-The long-term vision is to optimize the AI inference pipeline for Snapdragon-powered PCs, enabling more private, responsive, and offline-friendly AI-assisted learning.
+```text
+                          ┌── GeminiProvider ───────────────► Gemini API
+Application → ai_layer.py ┤
+                          └── SnapdragonProvider (mock) ───► future Qualcomm runtime → Hexagon NPU
+```
 
----
+The provider is selected per request from the UI (`cloud` or `local`). The server keeps the Gemini API key on the server and never sends it to the browser.
 
-## Current Features
+## Current features
 
--  PDF upload
--  PDF text extraction
--  Question answering based on uploaded study material
--  AI-powered explanations
--  API credentials stored securely using environment variables
+- PDF/TXT upload and text extraction with PyMuPDF
+- Question answering against the uploaded document
+- Cloud inference through the existing Gemini API integration
+- A provider-neutral `InferenceProvider` abstraction
+- A transparent Snapdragon local-provider placeholder for development
+- Environment-variable configuration for credentials and the default provider
 
----
+## Inference architecture
 
-## Planned Features
+### Cloud AI path (available when `GEMINI_API_KEY` is configured)
 
--  AI-generated quizzes
--  Weak-topic detection
--  Knowledge maps
--  Adaptive "Teach Me" mode
--  Voice-based interaction
--  Image/problem understanding
--  Local/offline AI inference
--  Snapdragon NPU-accelerated AI inference
+```text
+Application → InferenceProvider → GeminiProvider → google-genai → Gemini API
+```
 
----
+The existing Gemini model fallback behavior remains in `GeminiProvider` in [`ai_layer.py`](ai_layer.py).
 
-## Technology Stack
+### Snapdragon path (architecture ready; hardware execution not included)
 
-### Current Prototype
+```text
+Application → InferenceProvider → SnapdragonProvider
+                                      │
+                                      └─ future Qualcomm AI Runtime / QNN / AI Engine Direct
+                                             │
+                                             └─ Hexagon NPU (where supported)
+```
+
+At present, `SnapdragonProvider` returns a deterministic mock response. It does **not** claim to detect or use Snapdragon hardware, Qualcomm AI Runtime, QNN, AI Engine Direct, or a compiled model. This is intentional because this repository does not include compatible hardware bindings or a Qualcomm-optimized model artifact.
+
+The future implementation boundary is commented in `SnapdragonProvider.infer()`:
+
+1. Load a Qualcomm AI Hub-optimized ONNX or equivalent compiled model.
+2. Create a Qualcomm AI Runtime/QNN (AI Engine Direct) session.
+3. Bind tokenizer and tensor inputs.
+4. Execute on the Hexagon NPU where the target device/runtime supports it.
+5. Convert the model output into the same `InferenceResult` returned by the abstraction.
+
+This keeps Qualcomm-specific dependencies out of the base application until a target Snapdragon device, SDK/runtime version, model format, and deployment process are selected.
+
+## Configuration
+
+Create a local `.env` file (never commit it):
+
+```env
+GEMINI_API_KEY=your_real_key_here
+# Optional: cloud (default) or local
+AI_PROVIDER=cloud
+```
+
+The browser can override the default provider per question through the inference-path selector. No API key is accepted from the browser.
+
+## Technology stack
 
 - **Frontend:** HTML, CSS, JavaScript
 - **Backend:** Python, Flask
-- **AI:** Cloud-based LLM API
-- **PDF Processing:** PyMuPDF
-- **Configuration:** Python `dotenv`
+- **Cloud AI:** Gemini via `google-genai`
+- **Local AI seam:** Python provider interface with a mock Snapdragon implementation
+- **PDF processing:** PyMuPDF
+- **Configuration:** `python-dotenv`
 
-### Future Snapdragon Integration
+## Running locally
 
-The AI layer is being designed to be replaceable so that the current cloud AI provider can eventually be replaced by a locally running model optimized for Snapdragon-powered PCs.
-
-Potential technologies include:
-
-- Qualcomm AI Hub
-- Qualcomm AI Runtime
-- Snapdragon Hexagon NPU
-- Quantized AI models
-- Local inference runtimes
-
-> **Note:** Snapdragon is the hardware platform. The AI model itself will be a compatible model that can be optimized and executed on Snapdragon hardware through an appropriate runtime.
-
----
-
-## Current Architecture
-
-```text
-Student
-   │
-   ▼
-StudySnap Web Interface
-   │
-   ▼
-Flask Backend
-   │
-   ▼
-PDF Processing
-   │
-   ▼
-Extracted Study Material
-   │
-   ▼
-AI Provider
-   │
-   ▼
-AI-Generated Answer
-
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python app.py
 ```
 
-## Future Architecture
+Open <http://127.0.0.1:5000>.
+
+To run the provider tests without network access:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+## Project structure
 
 ```text
-Student
-   │
-   ▼
-StudySnap
-   │
-   ▼
-AI Abstraction Layer
-   │
-   ├───────────────┐
-   ▼               ▼
-Cloud AI       Local AI Model
-Provider            │
-                    ▼
-             Qualcomm Runtime
-                    │
-              ┌─────┴─────┐
-              ▼           ▼
-             NPU       CPU / GPU
+app.py                    Flask routes and document lifecycle
+ai_layer.py               Provider interface, Gemini provider, Snapdragon mock
+static/script.js          Upload, provider selection, and question UI
+templates/index.html      Existing UI plus inference-path selector
+tests/test_ai_layer.py    Offline provider contract tests
 ```
+
+## Planned features
+
+- AI-generated quizzes
+- Weak-topic detection
+- Knowledge maps
+- Adaptive “Teach Me” mode
+- Voice-based interaction
+- Image/problem understanding
+- Qualcomm AI Hub model optimization and Snapdragon device deployment

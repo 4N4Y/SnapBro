@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const questionInput = document.getElementById('questionInput');
     const askBtn = document.getElementById('askBtn');
     const askStatus = document.getElementById('askStatus');
+    const providerSelect = document.getElementById('providerSelect');
 
     // Theme Switcher Elements
     const themeToggleBtn = document.getElementById('themeToggleBtn');
@@ -218,31 +219,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const provider = providerSelect ? providerSelect.value : 'cloud';
+            const isLocal = provider === 'local';
             askBtn.disabled = true;
-            askBtn.textContent = 'Asking Gemini...';
+            askBtn.textContent = isLocal ? 'Asking locally...' : 'Asking Gemini...';
             askStatus.className = 'status-message loading';
-            askStatus.innerHTML = '<strong>[GEMINI]</strong> Generating an answer from your study material...';
+            askStatus.innerHTML = isLocal
+                ? '<strong>[SNAPDRAGON MOCK]</strong> Running the local-provider placeholder (no hardware inference is claimed)...'
+                : '<strong>[GEMINI]</strong> Generating an answer from your study material...';
             askStatus.classList.remove('hidden');
 
             try {
                 const response = await fetch('/api/ask', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question })
+                    body: JSON.stringify({ question, provider })
                 });
                 const data = await response.json();
 
                 if (response.ok && data.success) {
                     askStatus.className = 'status-message success';
+                    const executionLabel = data.execution === 'mock'
+                        ? 'SNAPDRAGON MOCK — NO DEVICE EXECUTION'
+                        : data.provider === 'cloud' ? 'GEMINI CLOUD' : 'LOCAL PROVIDER';
                     askStatus.innerHTML = `
                         <div class="result-header">
-                            <span class="result-badge">✔ ANSWER</span>
+                            <span class="result-badge">✔ ${executionLabel}</span>
                         </div>
                         <p class="preview-text ask-answer">${escapeHtml(data.answer)}</p>
                     `;
                 } else {
                     askStatus.className = 'status-message error';
-                    askStatus.innerHTML = `<strong>[GEMINI ERROR]</strong> ${escapeHtml(data.error || 'Failed to get an answer.')}`;
+                    askStatus.innerHTML = `<strong>[AI PROVIDER ERROR]</strong> ${escapeHtml(data.error || 'Failed to get an answer.')}`;
                 }
             } catch (err) {
                 askStatus.className = 'status-message error';

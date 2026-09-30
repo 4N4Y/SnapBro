@@ -148,6 +148,11 @@
 
                 <section id="askPanel" class="ask-panel hidden">
                     <div class="ask-panel-label">ASK THE DOCUMENT</div>
+                    <label class="ask-label" for="providerSelect">Inference path</label>
+                    <select id="providerSelect" class="ask-input">
+                        <option value="cloud">Cloud AI — Gemini API</option>
+                        <option value="local">Snapdragon local AI — mock until hardware/model is configured</option>
+                    </select>
                     <label class="ask-label" for="questionInput">Question</label>
                     <textarea id="questionInput" class="ask-input" rows="3" placeholder="Ask a question about the uploaded study material..."></textarea>
                     <button type="button" id="askBtn" class="btn btn-primary">Ask Gemini →</button>
